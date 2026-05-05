@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "maseffects",
+	"version": "2.0.1",
+	"name": "MasEffects",
+	"description": "A mod focused on enhancing Minecraft PVP visually! (recompiled by kate)",
+	"authors": [
+		"MasUN0"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/MasUnoYT/maseffects"
+	},
+	"license": "MIT",
+	"icon": "assets/maseffects/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"main": [
+			"net.masuno.MasEffects"
+		],
+		"client": [
+			"net.masuno.MasEffectsClient"
+		],
+		"modmenu": [
+			"net.masuno.config.ModMenuIntegration"
+		]
+	},
+	"mixins": [
+		"maseffects.mixins.json",
+		{
+			"config": "maseffects.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.17.3",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

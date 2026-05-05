@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.masuno.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ClientWorldExplosionMixin",
+    "MaceMixin",
+    "TotemMixin",
+    "TotemParticleMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [],
+  "refmap": "client-maseffects-refmap.json"
+}

@@ -1,0 +1,32 @@
+{
+  "mappings": {
+    "net/masuno/mixin/ClientWorldExplosionMixin": {
+      "tick": "Lnet/minecraft/client/particle/GustEmitterParticle;tick()V"
+    },
+    "net/masuno/mixin/MaceMixin": {
+      "syncWorldEvent": "Lnet/minecraft/client/world/ClientWorld;syncWorldEvent(Lnet/minecraft/entity/Entity;ILnet/minecraft/util/math/BlockPos;I)V"
+    },
+    "net/masuno/mixin/TotemMixin": {
+      "onEntityStatus": "Lnet/minecraft/client/network/ClientPlayNetworkHandler;onEntityStatus(Lnet/minecraft/network/packet/s2c/play/EntityStatusS2CPacket;)V"
+    },
+    "net/masuno/mixin/TotemParticleMixin": {
+      "<init>": "Lnet/minecraft/client/particle/TotemParticle;<init>(Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/client/particle/SpriteProvider;)V"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "net/masuno/mixin/ClientWorldExplosionMixin": {
+        "tick": "Lnet/minecraft/client/particle/GustEmitterParticle;tick()V"
+      },
+      "net/masuno/mixin/MaceMixin": {
+        "syncWorldEvent": "Lnet/minecraft/client/world/ClientWorld;syncWorldEvent(Lnet/minecraft/entity/Entity;ILnet/minecraft/util/math/BlockPos;I)V"
+      },
+      "net/masuno/mixin/TotemMixin": {
+        "onEntityStatus": "Lnet/minecraft/client/network/ClientPlayNetworkHandler;onEntityStatus(Lnet/minecraft/network/packet/s2c/play/EntityStatusS2CPacket;)V"
+      },
+      "net/masuno/mixin/TotemParticleMixin": {
+        "<init>": "Lnet/minecraft/client/particle/TotemParticle;<init>(Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/client/particle/SpriteProvider;)V"
+      }
+    }
+  }
+}
