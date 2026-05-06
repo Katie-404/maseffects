@@ -5,8 +5,7 @@
   "client": [
     "ClientWorldExplosionMixin",
     "MaceMixin",
-    "TotemMixin",
-    "TotemParticleMixin"
+    "TotemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
