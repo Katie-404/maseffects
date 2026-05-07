@@ -70,8 +70,18 @@ public class MasConfig implements ConfigData {
    public float PearlTrailOpacity = 0.5F;
    @Tooltip
    @Category("default")
-   @Comment("Enables an icon below to the crosshair that shows when you are gliding")
+   @Comment("Enables an icon below to the crosshair that shows when you are gliding")//for some reason this text doesn't show in game
    public boolean GlideIcon = true;
+
+   /*@Tooltip
+   @Category("default")
+   @Comment("Enables custom hitboxes")
+   public boolean CustomHitbox = true;
+   @Tooltip
+   @Category("default")
+   @Comment("Colors the hitboxes of Ender Pearls")
+   public boolean PearlHitboxColors= true;*/
+
 
    public static void init() {
       AutoConfig.register(MasConfig.class, JanksonConfigSerializer::new);
