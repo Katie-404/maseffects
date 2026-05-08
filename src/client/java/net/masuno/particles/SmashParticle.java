@@ -3,44 +3,43 @@ package net.masuno.particles;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.masuno.config.MasConfig;
-import net.minecraft.client.particle.BillboardParticleSubmittable;
-import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.client.particle.BillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.client.particle.BillboardParticle.RenderType;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
-public class SmashParticle extends BillboardParticle {
+public class SmashParticle extends SingleQuadParticle {
    private static final Quaternionf QUATERNION = new Quaternionf(0.0, 0.7, 0.7F, 0.0);
    private static final Quaternionf INVERTED = new Quaternionf(0.0, -0.7, 0.7F, 0.0);
-   private final SpriteProvider provider;
+   private final SpriteSet provider;
    private float scaler = 1.0F;
    private float sizer = 1.0F;
    private float alpha_ctrl = 1.0F;
 
-   public SmashParticle(ClientWorld clientWorld, double x, double y, double z, SpriteProvider spriteProvider, double xSpeed, double ySpeed, double zSpeed) {
-      super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.getFirst());
+   public SmashParticle(ClientLevel clientWorld, double x, double y, double z, SpriteSet spriteProvider, double xSpeed, double ySpeed, double zSpeed) {
+      super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.first());
       this.scaler = (float)xSpeed;
       this.provider = spriteProvider;
       this.alpha_ctrl = (float)ySpeed;
       this.alpha = Math.clamp(this.alpha_ctrl * MasConfig.INSTANCE.MaceShockwaveOpacity, 0.0F, 1.0F);
-      this.scale = 0.5F;
-      this.maxAge = 40;
-      this.velocityMultiplier = 0.0F;
+      this.quadSize = 0.5F;
+      this.lifetime = 40;
+      this.friction = 0.0F;
       this.sizer = (float)zSpeed * 0.1F;
-      this.setSprite(spriteProvider.getFirst());
+      this.setSprite(spriteProvider.first());
    }
 
-   public void renderVertex(BillboardParticleSubmittable submittable, Quaternionf rotation, float x, float y, float z, float tickProgress) {
-      submittable.render(
-              this.getRenderType(),
+   public void extractRotatedQuad(QuadParticleRenderState submittable, Quaternionf rotation, float x, float y, float z, float tickProgress) {
+      submittable.add(
+              this.getLayer(),
               x,
               y,
               z,
@@ -48,16 +47,16 @@ public class SmashParticle extends BillboardParticle {
               QUATERNION.y,
               QUATERNION.z,
               QUATERNION.w,
-              this.getSize(tickProgress),
-              this.getMinU(),
-              this.getMaxU(),
-              this.getMinV(),
-              this.getMaxV(),
-              ColorHelper.fromFloats(this.alpha, this.red, this.green, this.blue),
-              this.getBrightness(tickProgress)
+              this.getQuadSize(tickProgress),
+              this.getU0(),
+              this.getU1(),
+              this.getV0(),
+              this.getV1(),
+              ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol),
+              this.getLightColor(tickProgress)
       );
-      submittable.render(
-              this.getRenderType(),
+      submittable.add(
+              this.getLayer(),
               x,
               y,
               z,
@@ -65,41 +64,41 @@ public class SmashParticle extends BillboardParticle {
               INVERTED.y,
               INVERTED.z,
               INVERTED.w,
-              this.getSize(tickProgress),
-              this.getMinU(),
-              this.getMaxU(),
-              this.getMinV(),
-              this.getMaxV(),
-              ColorHelper.fromFloats(this.alpha, this.red, this.green, this.blue),
-              this.getBrightness(tickProgress)
+              this.getQuadSize(tickProgress),
+              this.getU0(),
+              this.getU1(),
+              this.getV0(),
+              this.getV1(),
+              ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol),
+              this.getLightColor(tickProgress)
       );
    }
 
-   protected RenderType getRenderType() {
-      return RenderType.PARTICLE_ATLAS_TRANSLUCENT;
+   protected Layer getLayer() {
+      return Layer.TRANSLUCENT;
    }
 
    public void tick() {
       super.tick();
-      this.scale = this.scale + this.scaler * this.sizer;
-      this.scaler = this.scaler - 1.0F / this.maxAge;
-      this.alpha_ctrl = this.alpha_ctrl - 1.0F / this.maxAge;
+      this.quadSize = this.quadSize + this.scaler * this.sizer;
+      this.scaler = this.scaler - 1.0F / this.lifetime;
+      this.alpha_ctrl = this.alpha_ctrl - 1.0F / this.lifetime;
       this.scaler = Math.clamp(this.scaler, 0.0F, 1.0F);
       this.alpha = Math.clamp(this.alpha_ctrl * MasConfig.INSTANCE.MaceShockwaveOpacity, 0.0F, 1.0F);
-      this.setSprite(this.provider.getSprite(Math.min(this.age, this.maxAge / 2), this.maxAge / 2));
+      this.setSprite(this.provider.get(Math.min(this.age, this.lifetime / 2), this.lifetime / 2));
    }
 
    @Environment(EnvType.CLIENT)
-   public static class Factory implements ParticleFactory<SimpleParticleType> {
-      private final SpriteProvider spriteProvider;
+   public static class Factory implements ParticleProvider<SimpleParticleType> {
+      private final SpriteSet spriteProvider;
 
-      public Factory(SpriteProvider spriteProvider) {
+      public Factory(SpriteSet spriteProvider) {
          this.spriteProvider = spriteProvider;
       }
 
       @Nullable
       public Particle createParticle(
-              SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Random random
+              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
       ) {
          return new SmashParticle(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ);
       }

@@ -3,38 +3,37 @@ package net.masuno.particles;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.masuno.config.MasConfig;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.client.particle.BillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.BillboardParticle.RenderType;
+import net.minecraft.client.particle.ParticleProvider;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
-public class ReviveSparkParticle extends BillboardParticle {
+public class ReviveSparkParticle extends SingleQuadParticle {
    private LivingEntity target = null;
-   private Vec3d targetDir;
+   private Vec3 targetDir;
 
    public ReviveSparkParticle(
-           ClientWorld clientWorld, double x, double y, double z, SpriteProvider spriteProvider, double xSpeed, double ySpeed, double zSpeed, Random random
+           ClientLevel clientWorld, double x, double y, double z, SpriteSet spriteProvider, double xSpeed, double ySpeed, double zSpeed, RandomSource random
    ) {
-      super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.getFirst());
-      this.maxAge = this.random.nextBetween(30, 48);
+      super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.first());
+      this.lifetime = this.random.nextIntBetweenInclusive(30, 48);
       this.alpha = MasConfig.INSTANCE.TotemEffectOpacity;
-      this.scale = 0.1F;
-      this.velocityX = this.random.nextBetween(-10, 10) / 25.0F;
-      this.velocityY = this.random.nextBetween(-10, 10) / 25.0F;
-      this.velocityZ = this.random.nextBetween(-10, 10) / 25.0F;
-      this.velocityMultiplier = 1.0F;
-      this.collidesWithWorld = true;
-      this.setSprite(spriteProvider.getSprite(random));
-      Entity ent = clientWorld.getEntityById((int)xSpeed);
+      this.quadSize = 0.1F;
+      this.xd = this.random.nextIntBetweenInclusive(-10, 10) / 25.0F;
+      this.yd = this.random.nextIntBetweenInclusive(-10, 10) / 25.0F;
+      this.zd = this.random.nextIntBetweenInclusive(-10, 10) / 25.0F;
+      this.friction = 1.0F;
+      this.hasPhysics = true;
+      this.setSprite(spriteProvider.get(random));
+      Entity ent = clientWorld.getEntity((int)xSpeed);
       if (ent != null && ent instanceof LivingEntity) {
          this.target = (LivingEntity)ent;
       }
@@ -49,7 +48,7 @@ public class ReviveSparkParticle extends BillboardParticle {
    public void tick() {
       super.tick();
       if (this.target != null) {
-         this.targetDir = new Vec3d(
+         this.targetDir = new Vec3(
                  this.target.getX() - this.x,
                  this.target.getY() + this.target.getDimensions(this.target.getPose()).height() / 2.0F - this.y,
                  this.target.getZ() - this.z
@@ -57,40 +56,40 @@ public class ReviveSparkParticle extends BillboardParticle {
          this.targetDir = this.targetDir.normalize();
       }
 
-      if (this.age >= this.maxAge / 5.0F && this.age < this.maxAge / 4.0F) {
-         this.velocityMultiplier = 0.0F;
+      if (this.age >= this.lifetime / 5.0F && this.age < this.lifetime / 4.0F) {
+         this.friction = 0.0F;
       }
 
       if (this.target != null
-              && this.age >= this.maxAge / 4.0F
-              && this.target.getEntityPos().distanceTo(new Vec3d(this.x, this.y, this.z)) < 20.0) {
-         this.alpha = Math.clamp(1.0F - (this.age - this.maxAge / 1.5F) / 20.0F, 0.0F, 1.0F) * MasConfig.INSTANCE.TotemEffectOpacity;
-         this.velocityMultiplier = 1.0F;
-         this.velocityX = this.targetDir.x * ((this.age - 15) * 0.05F);
-         this.velocityY = this.targetDir.y * ((this.age - 15) * 0.05F);
-         this.velocityZ = this.targetDir.z * ((this.age - 15) * 0.05F);
-         if (this.target.getEntityPos().distanceTo(new Vec3d(this.x, this.y, this.z)) < 2.0) {
+              && this.age >= this.lifetime / 4.0F
+              && this.target.position().distanceTo(new Vec3(this.x, this.y, this.z)) < 20.0) {
+         this.alpha = Math.clamp(1.0F - (this.age - this.lifetime / 1.5F) / 20.0F, 0.0F, 1.0F) * MasConfig.INSTANCE.TotemEffectOpacity;
+         this.friction = 1.0F;
+         this.xd = this.targetDir.x * ((this.age - 15) * 0.05F);
+         this.yd = this.targetDir.y * ((this.age - 15) * 0.05F);
+         this.zd = this.targetDir.z * ((this.age - 15) * 0.05F);
+         if (this.target.position().distanceTo(new Vec3(this.x, this.y, this.z)) < 2.0) {
             this.alpha = 0.0F;
-            this.dead = true;
+            this.removed = true;
          }
       }
    }
 
-   protected RenderType getRenderType() {
-      return RenderType.PARTICLE_ATLAS_TRANSLUCENT;
+   protected Layer getLayer() {
+      return Layer.TRANSLUCENT;
    }
 
    @Environment(EnvType.CLIENT)
-   public static class Factory implements ParticleFactory<SimpleParticleType> {
-      private final SpriteProvider spriteProvider;
+   public static class Factory implements ParticleProvider<SimpleParticleType> {
+      private final SpriteSet spriteProvider;
 
-      public Factory(SpriteProvider spriteProvider) {
+      public Factory(SpriteSet spriteProvider) {
          this.spriteProvider = spriteProvider;
       }
 
       @Nullable
       public Particle createParticle(
-              SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Random random
+              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
       ) {
          return new ReviveSparkParticle(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ, random);
       }

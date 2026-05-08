@@ -2,52 +2,51 @@ package net.masuno.particles;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.client.particle.BillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.BillboardParticle.RenderType;
+import net.minecraft.client.particle.ParticleProvider;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
-public class ShieldWave extends BillboardParticle {
+public class ShieldWave extends SingleQuadParticle {
    private float scaler = 1.0F;
 
-   public ShieldWave(ClientWorld clientWorld, double x, double y, double z, SpriteProvider spriteProvider, double xSpeed, double ySpeed, double zSpeed) {
-      super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.getFirst());
-      this.velocityMultiplier = 0.0F;
-      this.maxAge = 30;
-      this.scale = 0.3F;
-      this.setSprite(spriteProvider.getFirst());
+   public ShieldWave(ClientLevel clientWorld, double x, double y, double z, SpriteSet spriteProvider, double xSpeed, double ySpeed, double zSpeed) {
+      super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.first());
+      this.friction = 0.0F;
+      this.lifetime = 30;
+      this.quadSize = 0.3F;
+      this.setSprite(spriteProvider.first());
    }
 
    public void tick() {
       super.tick();
-      this.scale = this.scale + this.scaler * 0.2F;
-      this.scaler = this.scaler - 1.0F / this.maxAge;
-      this.alpha = this.alpha - 1.0F / this.maxAge;
+      this.quadSize = this.quadSize + this.scaler * 0.2F;
+      this.scaler = this.scaler - 1.0F / this.lifetime;
+      this.alpha = this.alpha - 1.0F / this.lifetime;
       this.scaler = Math.clamp(this.scaler, 0.0F, 1.0F);
       this.alpha = Math.clamp(this.alpha, 0.0F, 1.0F);
    }
 
-   protected RenderType getRenderType() {
-      return RenderType.PARTICLE_ATLAS_TRANSLUCENT;
+   protected Layer getLayer() {
+      return Layer.TRANSLUCENT;
    }
 
    @Environment(EnvType.CLIENT)
-   public static class Factory implements ParticleFactory<SimpleParticleType> {
-      private final SpriteProvider spriteProvider;
+   public static class Factory implements ParticleProvider<SimpleParticleType> {
+      private final SpriteSet spriteProvider;
 
-      public Factory(SpriteProvider spriteProvider) {
+      public Factory(SpriteSet spriteProvider) {
          this.spriteProvider = spriteProvider;
       }
 
       @Nullable
       public Particle createParticle(
-              SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Random random
+              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
       ) {
          return new ShieldWave(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ);
       }

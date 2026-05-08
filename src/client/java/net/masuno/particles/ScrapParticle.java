@@ -2,47 +2,46 @@ package net.masuno.particles;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.client.particle.BillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.BillboardParticle.RenderType;
+import net.minecraft.client.particle.ParticleProvider;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
-public class ScrapParticle extends BillboardParticle {
-   public ScrapParticle(ClientWorld clientWorld, double x, double y, double z, SpriteProvider spriteProvider, double xSpeed, double ySpeed, double zSpeed) {
-      super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.getFirst());
-      this.gravityStrength = 1.0F;
-      this.collidesWithWorld = true;
-      this.velocityMultiplier = 1.0F;
-      this.maxAge = 20;
-      this.setSprite(spriteProvider.getFirst());
+public class ScrapParticle extends SingleQuadParticle {
+   public ScrapParticle(ClientLevel clientWorld, double x, double y, double z, SpriteSet spriteProvider, double xSpeed, double ySpeed, double zSpeed) {
+      super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.first());
+      this.gravity = 1.0F;
+      this.hasPhysics = true;
+      this.friction = 1.0F;
+      this.lifetime = 20;
+      this.setSprite(spriteProvider.first());
    }
 
    public void tick() {
       super.tick();
-      this.scale = (1.0F - (float)this.age / this.maxAge) * 0.35F;
+      this.quadSize = (1.0F - (float)this.age / this.lifetime) * 0.35F;
    }
 
-   protected RenderType getRenderType() {
-      return RenderType.PARTICLE_ATLAS_TRANSLUCENT;
+   protected Layer getLayer() {
+      return Layer.TRANSLUCENT;
    }
 
    @Environment(EnvType.CLIENT)
-   public static class Factory implements ParticleFactory<SimpleParticleType> {
-      private final SpriteProvider spriteProvider;
+   public static class Factory implements ParticleProvider<SimpleParticleType> {
+      private final SpriteSet spriteProvider;
 
-      public Factory(SpriteProvider spriteProvider) {
+      public Factory(SpriteSet spriteProvider) {
          this.spriteProvider = spriteProvider;
       }
 
       @Nullable
       public Particle createParticle(
-              SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Random random
+              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
       ) {
          return new ScrapParticle(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ);
       }

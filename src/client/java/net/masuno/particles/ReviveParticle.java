@@ -4,24 +4,23 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.masuno.MathUtility;
 import net.masuno.config.MasConfig;
-import net.minecraft.client.particle.BillboardParticleSubmittable;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.client.particle.BillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.client.particle.BillboardParticle.RenderType;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
-public class ReviveParticle extends BillboardParticle {
-   private final SpriteProvider spriteProv;
+public class ReviveParticle extends SingleQuadParticle {
+   private final SpriteSet spriteProv;
    private final double scaler;
    private final double rotX;
    private final double rotZ;
@@ -29,17 +28,17 @@ public class ReviveParticle extends BillboardParticle {
    private LivingEntity target = null;
    private Quaternionf QUATERNION = new Quaternionf(0.0F, -0.7F, 0.7F, 0.0F);
 
-   public ReviveParticle(ClientWorld clientWorld, double x, double y, double z, SpriteProvider spriteProvider, double xSpeed, double ySpeed, double zSpeed) {
-      super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.getFirst());
-      this.maxAge = 20;
+   public ReviveParticle(ClientLevel clientWorld, double x, double y, double z, SpriteSet spriteProvider, double xSpeed, double ySpeed, double zSpeed) {
+      super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.first());
+      this.lifetime = 20;
       this.alpha = 0.0F;
-      this.scale = 0.2F;
+      this.quadSize = 0.2F;
       this.scaler = xSpeed;
-      this.velocityMultiplier = 0.0F;
-      this.rotX = this.random.nextBetween(-180, 180);
-      this.rotY = this.random.nextBetween(-180, 180);
-      this.rotZ = this.random.nextBetween(-180, 180);
-      Entity ent = clientWorld.getEntityById((int)ySpeed);
+      this.friction = 0.0F;
+      this.rotX = this.random.nextIntBetweenInclusive(-180, 180);
+      this.rotY = this.random.nextIntBetweenInclusive(-180, 180);
+      this.rotZ = this.random.nextIntBetweenInclusive(-180, 180);
+      Entity ent = clientWorld.getEntity((int)ySpeed);
       if (ent != null && ent instanceof LivingEntity) {
          this.target = (LivingEntity)ent;
       }
@@ -51,12 +50,12 @@ public class ReviveParticle extends BillboardParticle {
       }
 
       this.spriteProv = spriteProvider;
-      this.setSprite(this.spriteProv.getSprite(this.age, this.maxAge));
+      this.setSprite(this.spriteProv.get(this.age, this.lifetime));
    }
 
-   public void renderVertex(BillboardParticleSubmittable submittable, Quaternionf rotation, float x, float y, float z, float tickProgress) {
-      submittable.render(
-              this.getRenderType(),
+   public void extractRotatedQuad(QuadParticleRenderState submittable, Quaternionf rotation, float x, float y, float z, float tickProgress) {
+      submittable.add(
+              this.getLayer(),
               x,
               y,
               z,
@@ -64,17 +63,17 @@ public class ReviveParticle extends BillboardParticle {
               this.QUATERNION.y,
               this.QUATERNION.z,
               this.QUATERNION.w,
-              this.getSize(tickProgress),
-              this.getMinU(),
-              this.getMaxU(),
-              this.getMinV(),
-              this.getMaxV(),
-              ColorHelper.fromFloats(this.alpha, this.red, this.green, this.blue),
-              this.getBrightness(tickProgress)
+              this.getQuadSize(tickProgress),
+              this.getU0(),
+              this.getU1(),
+              this.getV0(),
+              this.getV1(),
+              ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol),
+              this.getLightColor(tickProgress)
       );
       Quaternionf INVERT = this.QUATERNION.invert();
-      submittable.render(
-              this.getRenderType(),
+      submittable.add(
+              this.getLayer(),
               x,
               y,
               z,
@@ -82,23 +81,23 @@ public class ReviveParticle extends BillboardParticle {
               INVERT.y,
               INVERT.z,
               INVERT.w,
-              this.getSize(tickProgress),
-              this.getMinU(),
-              this.getMaxU(),
-              this.getMinV(),
-              this.getMaxV(),
-              ColorHelper.fromFloats(this.alpha, this.red, this.green, this.blue),
-              this.getBrightness(tickProgress)
+              this.getQuadSize(tickProgress),
+              this.getU0(),
+              this.getU1(),
+              this.getV0(),
+              this.getV1(),
+              ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol),
+              this.getLightColor(tickProgress)
       );
    }
 
-   protected RenderType getRenderType() {
-      return RenderType.PARTICLE_ATLAS_TRANSLUCENT;
+   protected Layer getLayer() {
+      return Layer.TRANSLUCENT;
    }
 
    public void tick() {
       super.tick();
-      this.setSprite(this.spriteProv.getSprite(this.age, this.maxAge));
+      this.setSprite(this.spriteProv.get(this.age, this.lifetime));
       if (this.target != null) {
          this.setPos(
                  this.target.getX(),
@@ -111,23 +110,23 @@ public class ReviveParticle extends BillboardParticle {
          this.rotY += 20.0;
          this.QUATERNION = MathUtility.euler(0.0F, 0.0F, (float)this.rotY);
          this.QUATERNION = MathUtility.euler((float)this.rotZ, (float)this.rotX, (float)(-this.rotZ)).mul(this.QUATERNION);
-         this.scale = this.alpha / MasConfig.INSTANCE.TotemEffectOpacity * (float)this.scaler;
-         this.alpha = Math.clamp((float)Math.sqrt(Math.sin((double)this.age / this.maxAge * Math.PI)) / 1.2F, 0.0F, 1.0F)
+         this.quadSize = this.alpha / MasConfig.INSTANCE.TotemEffectOpacity * (float)this.scaler;
+         this.alpha = Math.clamp((float)Math.sqrt(Math.sin((double)this.age / this.lifetime * Math.PI)) / 1.2F, 0.0F, 1.0F)
                  * MasConfig.INSTANCE.TotemEffectOpacity;
       }
    }
 
    @Environment(EnvType.CLIENT)
-   public static class Factory implements ParticleFactory<SimpleParticleType> {
-      private final SpriteProvider spriteProvider;
+   public static class Factory implements ParticleProvider<SimpleParticleType> {
+      private final SpriteSet spriteProvider;
 
-      public Factory(SpriteProvider spriteProvider) {
+      public Factory(SpriteSet spriteProvider) {
          this.spriteProvider = spriteProvider;
       }
 
       @Nullable
       public Particle createParticle(
-              SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Random random
+              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
       ) {
          return new ReviveParticle(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ);
       }

@@ -2,8 +2,8 @@ package net.masuno;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -16,13 +16,13 @@ public class MathUtility {
       return qx.mul(qy).mul(qz);
    }
 
-   public static boolean isShielding(PlayerEntity player, PlayerEntity victim) {
+   public static boolean isShielding(Player player, Player victim) {
       if (!victim.isBlocking()) {
          return false;
       }
 
-      double shield_angle = victim.getYaw();
-      Vec3d attack_dir = player.getEntityPos().subtract(victim.getEntityPos()).normalize();
+      double shield_angle = victim.getYRot();
+      Vec3 attack_dir = player.position().subtract(victim.position()).normalize();
       double attack_angle = Math.atan2(attack_dir.x, attack_dir.z);
       attack_angle = Math.toDegrees(attack_angle);
       return angleDif(shield_angle, attack_angle) < 90.0 || angleDif(shield_angle, attack_angle) > 270.0;

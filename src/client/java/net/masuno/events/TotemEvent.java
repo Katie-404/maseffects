@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.masuno.config.MasConfig;
 import net.masuno.particles.ModParticles;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public class TotemEvent {
@@ -12,8 +12,8 @@ public class TotemEvent {
       if (MasConfig.INSTANCE.CustomTotemEffect) {
          for (int i = 1; i < 18; i++) {
             double scaler = 2.5;
-            popper.getEntityWorld()
-                    .addParticleClient(
+            popper.level()
+                    .addParticle(
                             ModParticles.REVIVE,
                             popper.getX(),
                             popper.getY() + popper.getDimensions(popper.getPose()).height() / 2.0F,
@@ -25,8 +25,8 @@ public class TotemEvent {
          }
 
          for (int i = 1; i < 100; i++) {
-            popper.getEntityWorld()
-                    .addParticleClient(
+            popper.level()
+                    .addParticle(
                             ModParticles.REVIVE_SPARK,
                             popper.getX(),
                             popper.getY() + popper.getDimensions(popper.getPose()).height() / 2.0F,

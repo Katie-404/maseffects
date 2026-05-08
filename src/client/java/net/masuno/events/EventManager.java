@@ -3,36 +3,35 @@ package net.masuno.events;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.EndTick;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.masuno.config.MasConfig;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.util.ActionResult;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
 
 @Environment(EnvType.CLIENT)
 public class EventManager {
    public static void registerEvents() {
-      AttackEntityCallback.EVENT.register((AttackEntityCallback)(playerEntity, world, hand, entity, entityHitResult) -> {
+      AttackEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
          PlayerAttackManager.clientAttack(playerEntity, entity, world);
-         return ActionResult.PASS;
+         return InteractionResult.PASS;
       });
       HudElementRegistry.attachElementBefore(
               VanillaHudElements.CROSSHAIR,
-              Identifier.of("maseffects", "elytra_hud"),
+              Identifier.fromNamespaceAndPath("maseffects", "elytra_hud"),
               (drawContext, renderTickCounter) -> {
-                 if (MinecraftClient.getInstance().player != null && MasConfig.INSTANCE.GlideIcon && MinecraftClient.getInstance().player.isGliding()) {
-                    drawContext.drawTexture(
+                 if (Minecraft.getInstance().player != null && MasConfig.INSTANCE.GlideIcon && Minecraft.getInstance().player.isFallFlying()) {
+                    drawContext.blit(
                             RenderPipelines.GUI_TEXTURED,
-                            Identifier.of("maseffects", "textures/hud/elytra_icon.png"),
-                            drawContext.getScaledWindowWidth() / 2 - 5,
-                            drawContext.getScaledWindowHeight() / 2 + 7,
+                            Identifier.fromNamespaceAndPath("maseffects", "textures/hud/elytra_icon.png"),
+                            drawContext.guiWidth() / 2 - 5,
+                            drawContext.guiHeight() / 2 + 7,
                             0.0F,
                             0.0F,
                             9,
@@ -43,21 +42,19 @@ public class EventManager {
                  }
               }
       );
-      ClientTickEvents.END_CLIENT_TICK.register((EndTick)minecraftClient -> {
-         if (minecraftClient.world != null) {
-            if (minecraftClient.world.getPlayers() != null) {
-               for (AbstractClientPlayerEntity player : minecraftClient.world.getPlayers()) {
-                  if (player.deathTime == 1) {
-                     DeathEvent.runDeath(player);
-                  }
-               }
+      ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
+         if (minecraftClient.level != null) {
+             for (AbstractClientPlayer player : minecraftClient.level.players()) {
+                 if (player.deathTime == 1) {
+                   DeathEvent.runDeath(player);
+                 }
+             }
 
-               for (Entity entity : minecraftClient.world.getEntities()) {
-                  if (entity instanceof EnderPearlEntity end) {
-                     EnderPearlTickEvent.tick(end);
-                  }
-               }
-            }
+             for (Entity entity : minecraftClient.level.entitiesForRendering()) {
+                if (entity instanceof ThrownEnderpearl end) {
+                   EnderPearlTickEvent.tick(end);
+                }
+             }
          }
       });
    }
