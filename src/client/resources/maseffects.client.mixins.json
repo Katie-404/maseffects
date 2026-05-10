@@ -4,9 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "ClientWorldExplosionMixin",
+    "HitboxRenderMixin",
     "MaceMixin",
-    "TotemMixin",
-    "TotemInvisibleMixin"
+    "TotemInvisibleMixin",
+    "TotemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -3,6 +3,7 @@ package net.masuno.config;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Excluded;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Tooltip;
@@ -10,6 +11,9 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Config(name = "mas_config")
 @Environment(EnvType.CLIENT)
@@ -73,14 +77,49 @@ public class MasConfig implements ConfigData {
    @Comment("Enables an icon below to the crosshair that shows when you are gliding")//for some reason this text doesn't show in game
    public boolean GlideIcon = true;
 
-   /*@Tooltip
-   @Category("default")
-   @Comment("Enables custom hitboxes")
+   @Tooltip
+   @Category("hitbox")
+   @Comment("Only players and ender pearls will show their hitboxes, player hitboxes will fade from afar and pearls can have different colors!")
    public boolean CustomHitbox = true;
    @Tooltip
-   @Category("default")
+   @Category("hitbox")
    @Comment("Colors the hitboxes of Ender Pearls")
-   public boolean PearlHitboxColors= true;*/
+   public boolean PearlHitboxColors= true;
+   @Tooltip
+   @Category("hitbox")
+   @Comment("Pearls thrown by these players will be colored green instead of red")
+   public List<String> PearlWhiteList = new ArrayList<>();
+   @Tooltip
+   @Category("hitbox")
+   @Comment("Color of your own pearl hitbox")
+   @ConfigEntry.ColorPicker(allowAlpha = true)
+   public int SelfPearlColor = 0xB3ffff00;
+   @Tooltip
+   @Category("hitbox")
+   @Comment("Color of your allies pearl hitboxes")
+   @ConfigEntry.ColorPicker(allowAlpha = true)
+   public int AllyPearlColor = 0xB30000ff;
+   @Tooltip
+   @Category("hitbox")
+   @Comment("Color of other player's pearl hitboxes")
+   @ConfigEntry.ColorPicker(allowAlpha = true)
+   public int OtherPearlColor = 0xB3ff0000;
+   @Tooltip
+   @Category("hitbox")
+   @Comment("Opacity of other mob's hitboxes")
+   public float MobPearlHitboxOpacity = 0.3F;
+   @Tooltip
+   @Category("hitbox")
+   @Comment("Opacity of player's hitboxes")
+   public float PlayerPearlHitboxOpacity = 0.8F;
+   @Tooltip
+   @Category("hitbox")
+   @Comment("Distance in blocks where hitbox starts to fade for mobs and players")
+   public float HitboxFadeDistance = 15F;
+   @Tooltip
+   @Category("hitbox")
+   @Comment("Distance in blocks where the hitbox starts to appear for pearls and wind charges")
+   public float HitboxProjectileFadeDistance = 5F;
 
 
    public static void init() {
