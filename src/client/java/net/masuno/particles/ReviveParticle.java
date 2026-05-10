@@ -30,7 +30,7 @@ public class ReviveParticle extends SingleQuadParticle {
 
    public ReviveParticle(ClientLevel clientWorld, double x, double y, double z, SpriteSet spriteProvider, double xSpeed, double ySpeed, double zSpeed) {
       super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.first());
-      this.lifetime = 20;
+      this.lifetime = 40;
       this.alpha = 0.0F;
       this.quadSize = 0.2F;
       this.scaler = xSpeed;
