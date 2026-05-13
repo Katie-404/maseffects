@@ -2,7 +2,7 @@ package net.masuno.mixin;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.masuno.config.MasConfig;
+import net.masuno.MasEffects;
 import net.minecraft.client.particle.SimpleAnimatedParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TotemParticle;
@@ -19,8 +19,8 @@ public abstract class TotemInvisibleMixin extends SimpleAnimatedParticle {
         super(world,x,y,z,spriteProvider,upwardsAcceleration);
     }
     @Inject(at = @At("TAIL"), method = "<init>")
-    private void injectAlpha(ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, SpriteSet spriteProvider, CallbackInfo ci
-    ) {if (MasConfig.INSTANCE.CustomTotemEffect) {
+    private void injectAlpha(ClientLevel level, double x, double y, double z, double xa, double ya, double za, SpriteSet sprites, CallbackInfo ci
+    ) {if (MasEffects.manager.getConfig().CustomTotemEffect) {
         this.alpha = 0.0F;
     }}
 }

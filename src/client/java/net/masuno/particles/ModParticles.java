@@ -2,7 +2,7 @@ package net.masuno.particles;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -38,17 +38,17 @@ public class ModParticles {
       Registry.register(BuiltInRegistries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("maseffects", "death_spark"), DEATH_SPARK);
       Registry.register(BuiltInRegistries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("maseffects", "death_skull"), DEATH_SKULL);
       Registry.register(BuiltInRegistries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("maseffects", "pearl_trail"), ENDER_PEARL_TRAIL);
-      ParticleFactoryRegistry.getInstance().register(SHOCKWAVE, SmashParticle.Factory::new);
-      ParticleFactoryRegistry.getInstance().register(WINDWAVE, WindParticle.Factory::new);
-      ParticleFactoryRegistry.getInstance().register(FLICK, FlickParticle.Factory::new);
-      ParticleFactoryRegistry.getInstance().register(FLASH, SparkProvider::new);
-      ParticleFactoryRegistry.getInstance().register(DIAMOND_SCRAP, ScrapParticle.Factory::new);
-      ParticleFactoryRegistry.getInstance().register(NETHERITE_SCRAP, ScrapParticle.Factory::new);
-      ParticleFactoryRegistry.getInstance().register(REVIVE, ReviveParticle.Factory::new);
-      ParticleFactoryRegistry.getInstance().register(REVIVE_SPARK, ReviveSparkParticle.Factory::new);
-      ParticleFactoryRegistry.getInstance().register(SHIELD_WAVE, ShieldWave.Factory::new);
-      ParticleFactoryRegistry.getInstance().register(DEATH_SPARK, DeathSpark.Factory::new);
-      ParticleFactoryRegistry.getInstance().register(DEATH_SKULL, DeathSkull.Factory::new);
-      ParticleFactoryRegistry.getInstance().register(ENDER_PEARL_TRAIL, EnderPearlTrail.Factory::new);
+      ParticleProviderRegistry.getInstance().register(SHOCKWAVE, SmashParticle.Factory::new);
+      ParticleProviderRegistry.getInstance().register(WINDWAVE, WindParticle.Factory::new);
+      ParticleProviderRegistry.getInstance().register(FLICK, FlickParticle.Factory::new);
+      ParticleProviderRegistry.getInstance().register(FLASH, SparkProvider::new);
+      ParticleProviderRegistry.getInstance().register(DIAMOND_SCRAP, ScrapParticle.Factory::new);
+      ParticleProviderRegistry.getInstance().register(NETHERITE_SCRAP, ScrapParticle.Factory::new);
+      ParticleProviderRegistry.getInstance().register(REVIVE, ReviveParticle.Factory::new);
+      ParticleProviderRegistry.getInstance().register(REVIVE_SPARK, ReviveSparkParticle.Factory::new);
+      ParticleProviderRegistry.getInstance().register(SHIELD_WAVE, ShieldWave.Factory::new);
+      ParticleProviderRegistry.getInstance().register(DEATH_SPARK, DeathSpark.Factory::new);
+      ParticleProviderRegistry.getInstance().register(DEATH_SKULL, DeathSkull.Factory::new);
+      ParticleProviderRegistry.getInstance().register(ENDER_PEARL_TRAIL, EnderPearlTrail.Factory::new);
    }
 }

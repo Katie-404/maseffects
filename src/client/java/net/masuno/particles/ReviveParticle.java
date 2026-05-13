@@ -2,9 +2,9 @@ package net.masuno.particles;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.masuno.MasEffects;
 import net.masuno.MathUtility;
-import net.masuno.config.MasConfig;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -69,7 +69,7 @@ public class ReviveParticle extends SingleQuadParticle {
               this.getV0(),
               this.getV1(),
               ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol),
-              this.getLightColor(tickProgress)
+              this.getLightCoords(tickProgress)
       );
       Quaternionf INVERT = this.QUATERNION.invert();
       submittable.add(
@@ -87,7 +87,7 @@ public class ReviveParticle extends SingleQuadParticle {
               this.getV0(),
               this.getV1(),
               ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol),
-              this.getLightColor(tickProgress)
+              this.getLightCoords(tickProgress)
       );
    }
 
@@ -106,13 +106,13 @@ public class ReviveParticle extends SingleQuadParticle {
          );
       }
 
-      if (!(MasConfig.INSTANCE.TotemEffectOpacity <= 0.0F)) {
+      if (!(MasEffects.manager.getConfig().TotemEffectOpacity <= 0.0F)) {
          this.rotY += 20.0;
          this.QUATERNION = MathUtility.euler(0.0F, 0.0F, (float)this.rotY);
          this.QUATERNION = MathUtility.euler((float)this.rotZ, (float)this.rotX, (float)(-this.rotZ)).mul(this.QUATERNION);
-         this.quadSize = this.alpha / MasConfig.INSTANCE.TotemEffectOpacity * (float)this.scaler;
+         this.quadSize = this.alpha / MasEffects.manager.getConfig().TotemEffectOpacity * (float)this.scaler;
          this.alpha = Math.clamp((float)Math.sqrt(Math.sin((double)this.age / this.lifetime * Math.PI)) / 1.2F, 0.0F, 1.0F)
-                 * MasConfig.INSTANCE.TotemEffectOpacity;
+                 * MasEffects.manager.getConfig().TotemEffectOpacity;
       }
    }
 

@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.masuno.config.MasConfig;
+import net.masuno.MasEffects;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -26,7 +26,7 @@ public class EventManager {
               VanillaHudElements.CROSSHAIR,
               Identifier.fromNamespaceAndPath("maseffects", "elytra_hud"),
               (drawContext, renderTickCounter) -> {
-                 if (Minecraft.getInstance().player != null && MasConfig.INSTANCE.GlideIcon && Minecraft.getInstance().player.isFallFlying()) {
+                 if (Minecraft.getInstance().player != null && MasEffects.manager.getConfig().GlideIcon && Minecraft.getInstance().player.isFallFlying()) {
                     drawContext.blit(
                             RenderPipelines.GUI_TEXTURED,
                             Identifier.fromNamespaceAndPath("maseffects", "textures/hud/elytra_icon.png"),

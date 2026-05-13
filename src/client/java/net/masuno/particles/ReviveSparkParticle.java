@@ -2,7 +2,7 @@ package net.masuno.particles;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.masuno.config.MasConfig;
+import net.masuno.MasEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -25,7 +25,7 @@ public class ReviveSparkParticle extends SingleQuadParticle {
    ) {
       super(clientWorld, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider.first());
       this.lifetime = this.random.nextIntBetweenInclusive(30, 48);
-      this.alpha = MasConfig.INSTANCE.TotemEffectOpacity;
+      this.alpha = MasEffects.manager.getConfig().TotemEffectOpacity;
       this.quadSize = 0.1F;
       this.xd = this.random.nextIntBetweenInclusive(-10, 10) / 25.0F;
       this.yd = this.random.nextIntBetweenInclusive(-10, 10) / 25.0F;
@@ -63,7 +63,7 @@ public class ReviveSparkParticle extends SingleQuadParticle {
       if (this.target != null
               && this.age >= this.lifetime / 4.0F
               && this.target.position().distanceTo(new Vec3(this.x, this.y, this.z)) < 20.0) {
-         this.alpha = Math.clamp(1.0F - (this.age - this.lifetime / 1.5F) / 20.0F, 0.0F, 1.0F) * MasConfig.INSTANCE.TotemEffectOpacity;
+         this.alpha = Math.clamp(1.0F - (this.age - this.lifetime / 1.5F) / 20.0F, 0.0F, 1.0F) * MasEffects.manager.getConfig().TotemEffectOpacity;
          this.friction = 1.0F;
          this.xd = this.targetDir.x * ((this.age - 15) * 0.05F);
          this.yd = this.targetDir.y * ((this.age - 15) * 0.05F);

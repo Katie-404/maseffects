@@ -1,12 +1,13 @@
 {
   "required": true,
   "package": "net.masuno.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
-    "ClientWorldExplosionMixin",
+    "ClientWorldExplosionionMixin",
+    "HitboxRenderMixin",
     "MaceMixin",
-    "TotemMixin",
-    "TotemInvisibleMixin"
+    "TotemInvisibleMixin",
+    "TotemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

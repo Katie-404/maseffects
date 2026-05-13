@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Random;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.masuno.MasEffects;
 import net.masuno.MathUtility;
-import net.masuno.config.MasConfig;
 import net.masuno.particles.ModParticles;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -32,7 +32,7 @@ public class PlayerAttackManager {
 
    public static void clientAttack(Player player, Entity victim, Level world) {
       if (world.isClientSide()) {
-         if (!MasConfig.INSTANCE.ShieldEffect) {
+         if (!MasEffects.manager.getConfig().ShieldEffect) {
             return;
          }
 
@@ -50,7 +50,7 @@ public class PlayerAttackManager {
                  && victim instanceof LivingEntity livingEntity
                  && hasEnchantment(player.getMainHandItem(), Enchantments.BREACH)
                  && player.fallDistance > 1.5
-                 && MasConfig.INSTANCE.ArmorParticles) {
+                 && MasEffects.manager.getConfig().ArmorParticles) {
             ArmorParticles(livingEntity);
          }
       }
@@ -69,18 +69,18 @@ public class PlayerAttackManager {
          size = Math.clamp(size, 1.0, 10.0);
          Random rand = new Random();
          Vec3 r = new Vec3(rand.nextFloat(-0.6F, 0.6F), rand.nextFloat(-1.2F, 1.2F), rand.nextFloat(-0.6F, 0.6F));
-         if (MasConfig.INSTANCE.MaceShockwave) {
-            world.addParticle(ModParticles.SHOCKWAVE, x, y, z, 0.8, 0.8, 1.5 * MasConfig.INSTANCE.MaceShockwaveSize * size);
-            world.addParticle(ModParticles.SHOCKWAVE, x, y, z, 0.4, 1.0, 0.35 * MasConfig.INSTANCE.MaceShockwaveSize * size);
-            world.addParticle(ModParticles.WINDWAVE, x, y, z, 0.8, 0.8, 1.75 * MasConfig.INSTANCE.MaceShockwaveSize * size);
+         if (MasEffects.manager.getConfig().MaceShockwave) {
+            world.addParticle(ModParticles.SHOCKWAVE, x, y, z, 0.8, 0.8, 1.5 * MasEffects.manager.getConfig().MaceShockwaveSize * size);
+            world.addParticle(ModParticles.SHOCKWAVE, x, y, z, 0.4, 1.0, 0.35 * MasEffects.manager.getConfig().MaceShockwaveSize * size);
+            world.addParticle(ModParticles.WINDWAVE, x, y, z, 0.8, 0.8, 1.75 * MasEffects.manager.getConfig().MaceShockwaveSize * size);
          }
 
-         if (MasConfig.INSTANCE.MaceSpark) {
+         if (MasEffects.manager.getConfig().MaceSpark) {
             world.addParticle(ModParticles.FLICK, x + r.x, y + r.y + 0.9F, z + r.z, 0.5, 0.0, 0.0);
             world.addParticle(ModParticles.FLICK, x + r.x, y + r.y + 0.9F, z + r.z, 0.2F, 0.0, 0.0);
          }
 
-         if (MasConfig.INSTANCE.MaceFlash) {
+         if (MasEffects.manager.getConfig().MaceFlash) {
             world.addParticle(ModParticles.FLASH, x, y, z, 0.0, 0.0, 0.0);
          }
       }

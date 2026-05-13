@@ -2,7 +2,7 @@ package net.masuno.particles;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.masuno.config.MasConfig;
+import net.masuno.MasEffects;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.client.Minecraft;
@@ -33,7 +33,7 @@ public class EnderPearlTrail extends SingleQuadParticle {
          this.alpha_ctrl -= 0.8F;
       }
 
-      this.alpha = this.alpha_ctrl * MasConfig.INSTANCE.PearlTrailOpacity;
+      this.alpha = this.alpha_ctrl * MasEffects.manager.getConfig().PearlTrailOpacity;
    }
 
    public void tick() {
@@ -46,7 +46,7 @@ public class EnderPearlTrail extends SingleQuadParticle {
          this.alpha_ctrl -= 0.8F;
       }
 
-      this.alpha = this.alpha_ctrl * MasConfig.INSTANCE.PearlTrailOpacity;
+      this.alpha = this.alpha_ctrl * MasEffects.manager.getConfig().PearlTrailOpacity;
    }
 
    protected Layer getLayer() {

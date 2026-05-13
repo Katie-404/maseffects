@@ -2,8 +2,8 @@ package net.masuno.particles;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.masuno.config.MasConfig;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import net.masuno.MasEffects;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
@@ -12,7 +12,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.util.ARGB;
-import net.minecraft.client.particle.SingleQuadParticle.Layer;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
@@ -30,7 +29,7 @@ public class WindParticle extends SingleQuadParticle {
       this.scaler = (float)xSpeed;
       this.provider = spriteProvider;
       this.alpha_ctrl = (float)ySpeed;
-      this.alpha = Math.clamp(this.alpha_ctrl * MasConfig.INSTANCE.MaceShockwaveOpacity, 0.0F, 1.0F);
+      this.alpha = Math.clamp(this.alpha_ctrl * MasEffects.manager.getConfig().MaceShockwaveOpacity, 0.0F, 1.0F);
       this.quadSize = 0.5F;
       this.lifetime = 40;
       this.friction = 0.0F;
@@ -54,7 +53,7 @@ public class WindParticle extends SingleQuadParticle {
               this.getV0(),
               this.getV1(),
               ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol),
-              this.getLightColor(tickProgress)
+              this.getLightCoords(tickProgress)
       );
       submittable.add(
               this.getLayer(),
@@ -71,7 +70,7 @@ public class WindParticle extends SingleQuadParticle {
               this.getV0(),
               this.getV1(),
               ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol),
-              this.getLightColor(tickProgress)
+              this.getLightCoords(tickProgress)
       );
    }
 
@@ -85,7 +84,7 @@ public class WindParticle extends SingleQuadParticle {
       this.scaler = this.scaler - 1.0F / this.lifetime;
       this.alpha_ctrl = this.alpha_ctrl - 1.0F / this.lifetime;
       this.scaler = Math.clamp(this.scaler, 0.0F, 1.0F);
-      this.alpha = Math.clamp(this.alpha_ctrl * MasConfig.INSTANCE.MaceShockwaveOpacity, 0.0F, 1.0F);
+      this.alpha = Math.clamp(this.alpha_ctrl * MasEffects.manager.getConfig().MaceShockwaveOpacity, 0.0F, 1.0F);
       this.setSprite(this.provider.get(Math.min(this.age, this.lifetime / 2), this.lifetime / 2));
    }
 

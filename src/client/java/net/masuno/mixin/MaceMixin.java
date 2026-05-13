@@ -16,8 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientLevel.class)
 public abstract class MaceMixin {
    @Inject(method = "levelEvent", at = @At("HEAD"))
-   private void MaceAttack(Entity source, int eventId, BlockPos pos, int data, CallbackInfo ci) {
-      if (eventId == 2013) {
+   private void MaceAttack(Entity source, int type, BlockPos pos, int data, CallbackInfo ci) {
+      if (type == 2013) {
          Vec3 vec = pos.getCenter().add(0.0, 0.5, 0.0);
          PlayerAttackManager.SlamEffect(vec.x(), vec.y(), vec.z(), 5.0);
       }

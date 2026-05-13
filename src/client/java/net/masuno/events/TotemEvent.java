@@ -2,14 +2,14 @@ package net.masuno.events;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.masuno.config.MasConfig;
+import net.masuno.MasEffects;
 import net.masuno.particles.ModParticles;
 import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public class TotemEvent {
    public static void run(Entity popper) {
-      if (MasConfig.INSTANCE.CustomTotemEffect) {
+      if (MasEffects.manager.getConfig().CustomTotemEffect) {
          for (int i = 1; i < 18; i++) {
             double scaler = 2.5;
             popper.level()

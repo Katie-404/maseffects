@@ -2,7 +2,7 @@ package net.masuno.mixin;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.masuno.config.MasConfig;
+import net.masuno.MasEffects;
 import net.masuno.particles.ModParticles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.NoRenderParticle;
@@ -15,14 +15,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
 @Mixin(GustSeedParticle.class)
-public class ClientWorldExplosionMixin extends NoRenderParticle {
-   protected ClientWorldExplosionMixin(ClientLevel clientWorld, double d, double e, double f) {
+public class ClientWorldExplosionionMixin extends NoRenderParticle {
+   protected ClientWorldExplosionionMixin(ClientLevel clientWorld, double d, double e, double f) {
       super(clientWorld, d, e, f);
    }
 
    @Inject(method = "tick", at = @At("HEAD"))
    private void ExplodeInject(CallbackInfo ci) {
-      if (this.age == 0 && MasConfig.INSTANCE.WindParticles) {
+      if (this.age == 0 && MasEffects.manager.getConfig().WindParticles) {
          assert Minecraft.getInstance().level != null;
          Minecraft.getInstance().level.addParticle(ModParticles.WINDWAVE, this.x, this.y, this.z, 0.3F, 1.0, 5.0);
       }
