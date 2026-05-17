@@ -48,12 +48,12 @@ public class HitboxRenderMixin {
 
                 if (entity instanceof ThrownEnderpearl pearl) {
                     isMob = false;
-                    float distance = (float)Math.clamp(
+                    float distance = (float) Math.clamp(
                             (this.minecraft.player.position().distanceTo(entity.position()) - MasConfig.INSTANCE.HitboxProjectileFadeDistance) / 20.0,
                             0.0,
                             1.0
                     );
-                    if (pearl.getOwner() != null && !MasConfig.INSTANCE.PearlHitboxColors) {
+                    if (pearl.getOwner() != null && MasConfig.INSTANCE.PearlHitboxColors) {
                         int baseColor;
                         if (pearl.getOwner().getUUID().equals(this.minecraft.player.getUUID())) {
                             baseColor = MasConfig.INSTANCE.SelfPearlColor;
