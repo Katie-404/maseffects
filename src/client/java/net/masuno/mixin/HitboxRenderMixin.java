@@ -53,7 +53,7 @@ public class HitboxRenderMixin {
                             0.0,
                             1.0
                     );
-                    if (pearl.getOwner() != null && !MasEffects.manager.getConfig().PearlHitboxColors) {
+                    if (pearl.getOwner() != null && MasEffects.manager.getConfig().PearlHitboxColors) {
                         int baseColor;
                         if (pearl.getOwner().getUUID().equals(this.minecraft.player.getUUID())) {
                             baseColor = MasEffects.manager.getConfig().SelfPearlColor;

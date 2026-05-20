@@ -1,9 +1,13 @@
 package net.masuno.config;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+@Getter
+@Setter
 public class MasConfig implements Serializable {
 
     //Mace
