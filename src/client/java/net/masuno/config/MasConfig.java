@@ -37,8 +37,8 @@ public class MasConfig implements Serializable {
     //Hitboxes
     public boolean CustomHitbox = true;
     public boolean PearlHitboxColors= true;
-    public float MobPearlHitboxOpacity = 0.3F;
-    public float PlayerPearlHitboxOpacity = 0.8F;
+    public float MobHitboxOpacity = 0.3F;
+    public float PlayerHitboxOpacity = 1.0F;
     public float HitboxFadeDistance = 15F;
     public float HitboxProjectileFadeDistance = 5F;
 }

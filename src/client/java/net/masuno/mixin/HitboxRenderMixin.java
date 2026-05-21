@@ -3,18 +3,16 @@ package net.masuno.mixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.masuno.MasEffects;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.debug.EntityHitboxDebugRenderer;
 import net.minecraft.gizmos.GizmoStyle;
 import net.minecraft.gizmos.Gizmos;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.projectile.hurtingprojectile.windcharge.WindCharge;
-import net.minecraft.util.ARGB;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,75 +26,57 @@ public class HitboxRenderMixin {
     @Shadow
     @Final
     Minecraft minecraft;
+    @Inject(method = "showHitboxes",at = @At("HEAD"),cancellable = true)
+    private void rendercustomHitbox(Entity entity, float partialTicks, boolean isServerEntity, CallbackInfo ci){
+        boolean isMob = true;
+        if (!MasEffects.manager.getConfig().CustomHitbox) return;
+        //Hitbox is from player
+        if(this.minecraft.player == null) return;
+        if (entity instanceof Player) {
+            isMob = false;
+            float distance = (float) Math.clamp((this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().getHitboxFadeDistance()) / 20F, 0D, 1D);
+            int c = ARGB.colorFromFloat((1.0F - distance) * MasEffects.manager.getConfig().getPlayerHitboxOpacity(), 1.0F, 1.0F, 1.0F);
+            Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
+        }
+        //Hitbox is from pearl
+        if (entity instanceof ThrownEnderpearl pe){
+            isMob = false;
+            float distance = (float)Math.clamp((this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().getHitboxProjectileFadeDistance()) / 20F,0D,1D);
+            if (pe.getOwner() != null && !MasEffects.manager.getConfig().PearlHitboxColors){
+                if (pe.getOwner().getUUID() == this.minecraft.player.getUUID()){
+                    //Pearl is mine
+                    int c = ARGB.colorFromFloat((1.0F -distance) * MasEffects.manager.getConfig().getSelfPearlColor(), 1.0F, 1.0F, 1.0F);
+                    Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
 
-    @Inject(method = "showHitboxes", at = @At("HEAD"), cancellable = true)
-    private void showCustomHitboxes(Entity entity, float partialTicks, boolean isServerEntity, CallbackInfo ci) {
-        if (MasEffects.manager.getConfig().CustomHitbox) {
-            if (this.minecraft.player != null) {
-                boolean isMob = true;
-                Vec3 renderPos = entity.getPosition(partialTicks);
-                Vec3 interpolationOffset = renderPos.subtract(entity.position());
-                AABB box = entity.getBoundingBox().move(interpolationOffset);
-                if (entity instanceof Player) {
-                    isMob = false;
-                    float distance = (float)Math.clamp(
-                            (this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().HitboxFadeDistance) / 20.0, 0.0, 1.0
-                    );
-                    int color = ARGB.colorFromFloat((1.0F - distance) * MasEffects.manager.getConfig().PlayerPearlHitboxOpacity, 1.0F, 1.0F, 1.0F);
-                    Gizmos.cuboid(box, GizmoStyle.stroke(color));
+                }else if(MasEffects.manager.getConfig().PearlWhiteList.contains(pe.getOwner().getScoreboardName())){
+                    //Pearl is from whitelisted player
+                    int c = ARGB.colorFromFloat((1.0F -distance) * MasEffects.manager.getConfig().getAllyPearlColor(), 1.0F, 1.0F, 1.0F);
+                    Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
                 }
-
-                if (entity instanceof ThrownEnderpearl pearl) {
-                    isMob = false;
-                    float distance = (float)Math.clamp(
-                            (this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().HitboxProjectileFadeDistance) / 20.0,
-                            0.0,
-                            1.0
-                    );
-                    if (pearl.getOwner() != null && MasEffects.manager.getConfig().PearlHitboxColors) {
-                        int baseColor;
-                        if (pearl.getOwner().getUUID().equals(this.minecraft.player.getUUID())) {
-                            baseColor = MasEffects.manager.getConfig().SelfPearlColor;
-                        } else if (MasEffects.manager.getConfig().PearlWhiteList.contains(pearl.getOwner().getScoreboardName())) {
-                            baseColor = MasEffects.manager.getConfig().AllyPearlColor;
-                        } else {
-                            baseColor = MasEffects.manager.getConfig().OtherPearlColor;
-                        }
-
-                        int argb = ARGB.colorFromFloat(
-                                distance,
-                                ARGB.red(baseColor) / 255.0F,
-                                ARGB.green(baseColor) / 255.0F,
-                                ARGB.blue(baseColor) / 255.0F
-                        );
-                        Gizmos.cuboid(box, GizmoStyle.stroke(argb));
-                    } else {
-                        int argb = ARGB.colorFromFloat(distance, 1.0F, 1.0F, 0.0F);
-                        Gizmos.cuboid(box, GizmoStyle.stroke(argb));
-                    }
+                else {
+                    //Pearl is from non-whitelisted
+                    int c = ARGB.colorFromFloat((1.0F -distance) * MasEffects.manager.getConfig().getOtherPearlColor(), 1.0F, 1.0F, 1.0F);
+                    Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
                 }
-
-                if (entity instanceof WindCharge) {
-                    isMob = false;
-                    float distance = (float)Math.clamp(
-                            (this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().HitboxProjectileFadeDistance) / 20.0,
-                            0.0,
-                            1.0
-                    );
-                    int color = ARGB.colorFromFloat(distance, 0.9F, 0.9F, 1.0F);
-                    Gizmos.cuboid(box, GizmoStyle.stroke(color));
-                }
-
-                if (entity instanceof LivingEntity && isMob) {
-                    float distance = (float)Math.clamp(
-                            (this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().HitboxFadeDistance) / 20.0, 0.0, 1.0
-                    );
-                    int color = ARGB.colorFromFloat((1.0F - distance) * MasEffects.manager.getConfig().MobPearlHitboxOpacity, 1.0F, 1.0F, 1.0F);
-                    Gizmos.cuboid(box, GizmoStyle.stroke(color));
-                }
-
-                ci.cancel();
+            }else {
+                int c = ARGB.colorFromFloat(distance, 1.0F, 1.0F, 0.0F);
+                Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
             }
         }
+
+        //Hitbox is from wind charge
+        if (entity instanceof WindCharge){
+            isMob = false;
+            float distance = (float)Math.clamp((this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().getHitboxProjectileFadeDistance()) / 20F,0D,1D);
+            Gizmos.cuboid((entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position()))), GizmoStyle.stroke(ARGB.colorFromFloat(distance, 0.9F, 0.9F, 1.0F)));
+        }
+
+        if (entity instanceof LivingEntity && isMob){
+            float distance = (float)Math.clamp((this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().getHitboxFadeDistance()) / 20F,0D,1D);
+            int c = ARGB.colorFromFloat((1.0F - distance) * MasEffects.manager.getConfig().getMobHitboxOpacity(), 1.0F, 1.0F, 1.0F);
+            Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
+        }
+
+        ci.cancel();
     }
 }

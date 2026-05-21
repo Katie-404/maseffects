@@ -108,8 +108,8 @@ public class MasConfigScreen extends TabbedConfigScreen<MasConfig> {
                     new ColorOption("maseffects.options.selfpearlcolor", config.getSelfPearlColor(), config::setSelfPearlColor),
                     new ColorOption("maseffects.options.allypearlcolor", config.getAllyPearlColor(), config::setAllyPearlColor),
                     new ColorOption("maseffects.option.otherpearlcolor", config.getOtherPearlColor(), config::setOtherPearlColor ),
-                    new TypedInputOption<Float>("maseffects.option.mobpearlhitboxopacity", String.valueOf(config.getMobPearlHitboxOpacity()), config::setMobPearlHitboxOpacity, this::convert, v -> v > 0),
-                    new TypedInputOption<Float>("maseffects.option.playerpearlhitboxopacity", String.valueOf(config.getPlayerPearlHitboxOpacity()), config::setPlayerPearlHitboxOpacity, this::convert, v -> v > 0),
+                    new TypedInputOption<Float>("maseffects.option.mobpearlhitboxopacity", String.valueOf(config.getMobHitboxOpacity()), config::setMobHitboxOpacity, this::convert, v -> v > 0),
+                    new TypedInputOption<Float>("maseffects.option.playerpearlhitboxopacity", String.valueOf(config.getPlayerHitboxOpacity()), config::setPlayerHitboxOpacity, this::convert, v -> v > 0),
                     new TypedInputOption<Float>("maseffects.option.hitboxfadedistance", String.valueOf(config.getHitboxFadeDistance()), config::setHitboxFadeDistance, this::convert, v -> v > 0),
                     new TypedInputOption<Float>("maseffects.option.hitboxprojectilefadedistance", String.valueOf(config.getHitboxProjectileFadeDistance()), config::setHitboxProjectileFadeDistance, this::convert, v -> v > 0),
             };

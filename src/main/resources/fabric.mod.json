@@ -1,15 +1,18 @@
 {
 	"schemaVersion": 1,
 	"id": "maseffects",
-	"version": "2.2.0",
+	"version": "2.2.1",
 	"name": "MasEffects",
-	"description": "A mod focused on enhancing Minecraft PVP visually! (recompiled and ported by kate)",
+	"description": "A mod focused on enhancing Minecraft PVP visually!",
 	"authors": [
 		"MasUN0"
 	],
+	"contributors": [
+		"kate"
+	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/MasUnoYT/maseffects"
+		"sources": "https://github.com/Katie-404/maseffects/"
 	},
 	"license": "MIT",
 	"icon": "assets/maseffects/icon.png",
