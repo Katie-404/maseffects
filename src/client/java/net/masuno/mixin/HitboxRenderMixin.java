@@ -42,28 +42,15 @@ public class HitboxRenderMixin {
         if (entity instanceof ThrownEnderpearl pe){
             isMob = false;
             float distance = (float)Math.clamp((this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().getHitboxProjectileFadeDistance()) / 20F,0D,1D);
-            if (pe.getOwner() != null && !MasEffects.manager.getConfig().PearlHitboxColors){
-                if (pe.getOwner().getUUID() == this.minecraft.player.getUUID()){
-                    //Pearl is mine
-                    int c = ARGB.colorFromFloat((1.0F -distance) * MasEffects.manager.getConfig().getSelfPearlColor(), 1.0F, 1.0F, 1.0F);
-                    Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
-
-                }else if(MasEffects.manager.getConfig().PearlWhiteList.contains(pe.getOwner().getScoreboardName())){
-                    //Pearl is from whitelisted player
-                    int c = ARGB.colorFromFloat((1.0F -distance) * MasEffects.manager.getConfig().getAllyPearlColor(), 1.0F, 1.0F, 1.0F);
-                    Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
-                }
-                else {
-                    //Pearl is from non-whitelisted
-                    int c = ARGB.colorFromFloat((1.0F -distance) * MasEffects.manager.getConfig().getOtherPearlColor(), 1.0F, 1.0F, 1.0F);
-                    Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
-                }
+            if (pe.getOwner() != null && MasEffects.manager.getConfig().PearlHitboxColors){
+                int pearlcolor = getColor(pe);
+                int c = ARGB.colorFromFloat(distance, ARGB.red(pearlcolor) /225.0F , ARGB.green(pearlcolor)/255.0F, ARGB.blue(pearlcolor)/255.0F);
+                Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
             }else {
                 int c = ARGB.colorFromFloat(distance, 1.0F, 1.0F, 0.0F);
                 Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
             }
         }
-
         //Hitbox is from wind charge
         if (entity instanceof WindCharge){
             isMob = false;
@@ -76,7 +63,21 @@ public class HitboxRenderMixin {
             int c = ARGB.colorFromFloat((1.0F - distance) * MasEffects.manager.getConfig().getMobHitboxOpacity(), 1.0F, 1.0F, 1.0F);
             Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
         }
-
         ci.cancel();
+    }
+    private int getColor(ThrownEnderpearl pe) {
+        int color;
+        if (pe.getOwner().getUUID() == this.minecraft.player.getUUID()){
+            //Pearl is mine
+            color = MasEffects.manager.getConfig().getSelfPearlColor();
+        }else if(MasEffects.manager.getConfig().getPearlWhiteList().contains(pe.getOwner().getScoreboardName())){
+            //Pearl is from whitelisted player
+            color = MasEffects.manager.getConfig().getAllyPearlColor();
+        }
+        else {
+            //Pearl is from non-whitelisted
+            color = MasEffects.manager.getConfig().getOtherPearlColor();
+        }
+        return color;
     }
 }
