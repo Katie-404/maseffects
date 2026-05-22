@@ -2,7 +2,6 @@ package net.masuno.config;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class MasConfig implements Serializable {
     public boolean GlideIcon = true;
 
     // Pearls
-    public boolean PearlTrailParticles = false;
+    public boolean PearlTrailParticles = true;
     public float PearlTrailOpacity = 0.5F;
     public List<String> PearlWhiteList = new ArrayList<>();
     public int SelfPearlColor = 0xB3ffff00;
