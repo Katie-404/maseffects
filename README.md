@@ -54,4 +54,4 @@ The original version was created by Masuno, this is supposed to be a maintained 
 
 ## Contributing:
 If you wanna contribute anything like adding support for a language or if you think you can take better screenshots than me dm me on discord @/s4047 :D
-<br>You could also open an issue on github, but I'm less likely to check that.
+<br>You could also open an issue on GitHub, but I'm less likely to check that.
