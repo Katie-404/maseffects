@@ -3,7 +3,7 @@
 
 # Mas Effects
 
-https://www.youtube.com/watch?v=JJvpNGda5yk
+[![](https://markdown-videos-api.jorgenkh.no/youtube/JJvpNGda5yk)](https://youtu.be/JJvpNGda5yk)
 
 </div>
 
