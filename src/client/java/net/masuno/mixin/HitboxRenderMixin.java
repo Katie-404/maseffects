@@ -16,9 +16,12 @@ import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnder
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 @Mixin(EntityHitboxDebugRenderer.class)
@@ -36,7 +39,7 @@ public class HitboxRenderMixin {
             isMob = false;
             float distance = (float) Math.clamp((this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().getHitboxFadeDistance()) / 20F, 0D, 1D);
             int c = ARGB.colorFromFloat((1.0F - distance) * MasEffects.manager.getConfig().getPlayerHitboxOpacity(), 1.0F, 1.0F, 1.0F);
-            Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
+            boxdrawer(entity, partialTicks, c);
         }
         //Hitbox is from pearl
         if (entity instanceof ThrownEnderpearl pe){
@@ -45,29 +48,36 @@ public class HitboxRenderMixin {
             if (pe.getOwner() != null && MasEffects.manager.getConfig().PearlHitboxColors){
                 int pearlcolor = getColor(pe);
                 int c = ARGB.colorFromFloat(distance, ARGB.red(pearlcolor) /225.0F , ARGB.green(pearlcolor)/255.0F, ARGB.blue(pearlcolor)/255.0F);
-                Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
+                boxdrawer(entity, partialTicks, c);
             }else {
                 int c = ARGB.colorFromFloat(distance, 1.0F, 1.0F, 0.0F);
-                Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
+                boxdrawer(entity, partialTicks, c);
             }
         }
         //Hitbox is from wind charge
         if (entity instanceof WindCharge){
             isMob = false;
             float distance = (float)Math.clamp((this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().getHitboxProjectileFadeDistance()) / 20F,0D,1D);
-            Gizmos.cuboid((entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position()))), GizmoStyle.stroke(ARGB.colorFromFloat(distance, 0.9F, 0.9F, 1.0F)));
+            int c = ARGB.colorFromFloat(distance, 0.9F, 0.9F, 1.0F);
+            boxdrawer(entity, partialTicks, c);
         }
-
+        //Hitbox from other mobs
         if (entity instanceof LivingEntity && isMob){
             float distance = (float)Math.clamp((this.minecraft.player.position().distanceTo(entity.position()) - MasEffects.manager.getConfig().getHitboxFadeDistance()) / 20F,0D,1D);
             int c = ARGB.colorFromFloat((1.0F - distance) * MasEffects.manager.getConfig().getMobHitboxOpacity(), 1.0F, 1.0F, 1.0F);
-            Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
+            boxdrawer(entity, partialTicks, c);
         }
         ci.cancel();
     }
+    @Unique
+    private void boxdrawer(Entity entity, float partialTicks, int c){
+        Gizmos.cuboid(entity.getBoundingBox().move(entity.getPosition(partialTicks).subtract(entity.position())), GizmoStyle.stroke(c));
+    }
+    @Unique
     private int getColor(ThrownEnderpearl pe) {
         int color;
-        if (pe.getOwner().getUUID() == this.minecraft.player.getUUID()){
+        assert this.minecraft.player != null;
+        if (Objects.requireNonNull(pe.getOwner()).getUUID() == this.minecraft.player.getUUID()){
             //Pearl is mine
             color = MasEffects.manager.getConfig().getSelfPearlColor();
         }else if(MasEffects.manager.getConfig().getPearlWhiteList().contains(pe.getOwner().getScoreboardName())){
