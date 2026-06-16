@@ -17,6 +17,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
+import org.jspecify.annotations.NonNull;
 
 @Environment(EnvType.CLIENT)
 public class ReviveParticle extends SingleQuadParticle {
@@ -39,7 +40,7 @@ public class ReviveParticle extends SingleQuadParticle {
       this.rotY = this.random.nextIntBetweenInclusive(-180, 180);
       this.rotZ = this.random.nextIntBetweenInclusive(-180, 180);
       Entity ent = clientWorld.getEntity((int)ySpeed);
-      if (ent != null && ent instanceof LivingEntity) {
+      if (ent instanceof LivingEntity) {
          this.target = (LivingEntity)ent;
       }
 
@@ -53,7 +54,7 @@ public class ReviveParticle extends SingleQuadParticle {
       this.setSprite(this.spriteProv.get(this.age, this.lifetime));
    }
 
-   public void extractRotatedQuad(QuadParticleRenderState submittable, Quaternionf rotation, float x, float y, float z, float tickProgress) {
+   public void extractRotatedQuad(QuadParticleRenderState submittable, @NonNull Quaternionf rotation, float x, float y, float z, float tickProgress) {
       submittable.add(
               this.getLayer(),
               x,
@@ -91,7 +92,7 @@ public class ReviveParticle extends SingleQuadParticle {
       );
    }
 
-   protected Layer getLayer() {
+   protected @NonNull Layer getLayer() {
       return Layer.TRANSLUCENT;
    }
 
@@ -126,7 +127,7 @@ public class ReviveParticle extends SingleQuadParticle {
 
       @Nullable
       public Particle createParticle(
-              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
+              @NonNull SimpleParticleType parameters, @NonNull ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, @NonNull RandomSource random
       ) {
          return new ReviveParticle(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ);
       }

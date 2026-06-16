@@ -14,6 +14,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 @Environment(EnvType.CLIENT)
 public class ReviveSparkParticle extends SingleQuadParticle {
@@ -34,7 +35,7 @@ public class ReviveSparkParticle extends SingleQuadParticle {
       this.hasPhysics = true;
       this.setSprite(spriteProvider.get(random));
       Entity ent = clientWorld.getEntity((int)xSpeed);
-      if (ent != null && ent instanceof LivingEntity) {
+      if (ent instanceof LivingEntity) {
          this.target = (LivingEntity)ent;
       }
 
@@ -75,7 +76,7 @@ public class ReviveSparkParticle extends SingleQuadParticle {
       }
    }
 
-   protected Layer getLayer() {
+   protected @NonNull Layer getLayer() {
       return Layer.TRANSLUCENT;
    }
 
@@ -89,7 +90,7 @@ public class ReviveSparkParticle extends SingleQuadParticle {
 
       @Nullable
       public Particle createParticle(
-              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
+              @NonNull SimpleParticleType parameters, @NonNull ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, @NonNull RandomSource random
       ) {
          return new ReviveSparkParticle(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ, random);
       }

@@ -10,6 +10,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 @Environment(EnvType.CLIENT)
 public class ShieldWave extends SingleQuadParticle {
@@ -32,7 +33,7 @@ public class ShieldWave extends SingleQuadParticle {
       this.alpha = Math.clamp(this.alpha, 0.0F, 1.0F);
    }
 
-   protected Layer getLayer() {
+   protected @NonNull Layer getLayer() {
       return Layer.TRANSLUCENT;
    }
 
@@ -46,7 +47,7 @@ public class ShieldWave extends SingleQuadParticle {
 
       @Nullable
       public Particle createParticle(
-              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
+              @NonNull SimpleParticleType parameters, @NonNull ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, @NonNull RandomSource random
       ) {
          return new ShieldWave(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ);
       }

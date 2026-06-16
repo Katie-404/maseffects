@@ -9,6 +9,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
+import org.jspecify.annotations.NonNull;
 
 @Environment(EnvType.CLIENT)
 public class DeathSkull extends SingleQuadParticle {
@@ -38,7 +39,7 @@ public class DeathSkull extends SingleQuadParticle {
       this.yd *= 0.95F;
    }
 
-   protected Layer getLayer() {
+   protected @NonNull Layer getLayer() {
       return Layer.TRANSLUCENT;
    }
 
@@ -51,7 +52,7 @@ public class DeathSkull extends SingleQuadParticle {
       }
 
       public Particle createParticle(
-              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
+              @NonNull SimpleParticleType parameters, @NonNull ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, @NonNull RandomSource random
       ) {
          return new DeathSkull(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ);
       }

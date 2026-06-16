@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "maseffects",
-	"version": "2.2.1",
+	"version": "2.3.0",
 	"name": "MasEffects",
 	"description": "A mod focused on enhancing Minecraft PVP visually!",
 	"authors": [
@@ -37,7 +37,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.18.3",
-		"minecraft": "~26.1",
+		"minecraft": "~26.2",
 		"java": ">=25",
 		"ukulib": "^2.0.0",
 		"fabric-api": "*"
