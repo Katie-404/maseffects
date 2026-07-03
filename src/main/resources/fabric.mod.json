@@ -37,9 +37,9 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.18.3",
-		"minecraft": "~26.2",
+		"minecraft": ">=26.1",
 		"java": ">=25",
-		"ukulib": "^2.1.1",
+		"ukulib": "^2.0.0",
 		"fabric-api": "*"
 	},
 	"suggests": {
