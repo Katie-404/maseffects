@@ -4,6 +4,7 @@
   "maseffects.config.general": "General Config",
   "maseffects.config.hitbox": "Hitbox Config",
   "maseffects.option.maceshowckwave": "Mace Shockwave",
+  "maseffects.option.legacyshockwave": "Remove Shockwave Spikes",
   "maseffects.option.maceshockwavesize": "Shockwave Size",
   "maseffects.option.maceshockwaveopacity": "Shockwave Opacity",
   "maseffects.option.macespark": "Mace Sparks",
@@ -49,5 +50,6 @@
   "maseffects.tooltip.mobpearlhitboxopacity": "Others Pearl Hitbox Color",
   "maseffects.tooltips.playerpearlhitboxopacity": "Opacity of player's hitboxes",
   "maseffects.tooltips.hitboxfadedistance": "Distance in blocks where the hitbox starts to fade for mobs and players",
-  "maseffects.tooltips.hitboxprojectilefadedistance": "Distance in blocks where the hitbox starts to appear for pearls and wind charges"
+  "maseffects.tooltips.hitboxprojectilefadedistance": "Distance in blocks where the hitbox starts to appear for pearls and wind charges",
+  "maseffects.tooltips.legacyshockwave": "Removes the spikes on the shockwave"
 }

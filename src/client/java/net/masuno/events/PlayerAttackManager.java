@@ -72,7 +72,8 @@ public class PlayerAttackManager {
          if (MasEffects.manager.getConfig().MaceShockwave) {
             world.addParticle(ModParticles.SHOCKWAVE, x, y, z, 0.8, 0.8, 1.5 * MasEffects.manager.getConfig().MaceShockwaveSize * size);
             world.addParticle(ModParticles.SHOCKWAVE, x, y, z, 0.4, 1.0, 0.35 * MasEffects.manager.getConfig().MaceShockwaveSize * size);
-            world.addParticle(ModParticles.WINDWAVE, x, y, z, 0.8, 0.8, 1.75 * MasEffects.manager.getConfig().MaceShockwaveSize * size);
+            if(!MasEffects.manager.getConfig().LegacyMaceShockwave)
+               world.addParticle(ModParticles.WINDWAVE, x, y, z, 0.8, 0.8, 1.75 * MasEffects.manager.getConfig().MaceShockwaveSize * size);
          }
 
          if (MasEffects.manager.getConfig().MaceSpark) {

@@ -41,7 +41,7 @@ public class MasConfigScreen extends TabbedConfigScreen<MasConfig> {
                     new TypedInputOption<Float>(
                             "maseffects.option.pearltrailopacity",
                             String.valueOf(config.getPearlTrailOpacity()),
-                            config::setMaceShockwaveOpacity,
+                            config::setPearlTrailOpacity,
                             this::convert,
                             v -> v > 0
                     ),
@@ -83,6 +83,7 @@ public class MasConfigScreen extends TabbedConfigScreen<MasConfig> {
                     CyclingOption.ofBoolean("maseffects.option.maceflash", config.MaceFlash, (v) -> config.MaceFlash = v, OptionInstance.cachedConstantTooltip(Component.translatable("maseffects.tooltips.maceflash"))),
                     CyclingOption.ofBoolean("maseffects.option.shieldeffect", config.ShieldEffect ,(v) -> config.ShieldEffect = v, OptionInstance.cachedConstantTooltip(Component.translatable("maseffects.tooltips.shieldeffect"))),
                     CyclingOption.ofBoolean("maseffects.option.armorparticles", config.ArmorParticles ,(v) -> config.ArmorParticles = v, OptionInstance.cachedConstantTooltip(Component.translatable("maseffects.tooltips.armorparticles"))),
+                    CyclingOption.ofBoolean("maseffects.option.legacyshockwave", config.LegacyMaceShockwave ,(v) -> config.LegacyMaceShockwave = v, OptionInstance.cachedConstantTooltip(Component.translatable("maseffects.tooltips.legacyshockwave"))),
             };
 
         }

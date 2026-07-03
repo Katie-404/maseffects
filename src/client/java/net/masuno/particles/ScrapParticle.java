@@ -10,7 +10,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
 
 @Environment(EnvType.CLIENT)
 public class ScrapParticle extends SingleQuadParticle {
@@ -28,7 +27,7 @@ public class ScrapParticle extends SingleQuadParticle {
       this.quadSize = (1.0F - (float)this.age / this.lifetime) * 0.35F;
    }
 
-   protected @NonNull Layer getLayer() {
+   protected Layer getLayer() {
       return Layer.TRANSLUCENT;
    }
 
@@ -42,7 +41,7 @@ public class ScrapParticle extends SingleQuadParticle {
 
       @Nullable
       public Particle createParticle(
-              @NonNull SimpleParticleType parameters, @NonNull ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, @NonNull RandomSource random
+              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
       ) {
          return new ScrapParticle(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ);
       }

@@ -10,7 +10,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
 
 @Environment(EnvType.CLIENT)
 public class FlickParticle extends SingleQuadParticle {
@@ -34,7 +33,7 @@ public class FlickParticle extends SingleQuadParticle {
       this.quadSize = this.alpha * this.scaler;
    }
 
-   protected @NonNull Layer getLayer() {
+   protected Layer getLayer() {
       return Layer.TRANSLUCENT;
    }
 
@@ -48,7 +47,7 @@ public class FlickParticle extends SingleQuadParticle {
 
       @Nullable
       public Particle createParticle(
-              @NonNull SimpleParticleType parameters, @NonNull ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, @NonNull RandomSource random
+              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
       ) {
          return new FlickParticle(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ);
       }

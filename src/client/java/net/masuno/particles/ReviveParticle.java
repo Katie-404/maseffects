@@ -45,16 +45,16 @@ public class ReviveParticle extends SingleQuadParticle {
       }
 
       if (this.random.nextBoolean()) {
-         this.setColor(1.0F, 1.0F, 0.0F);
-      } else {
          this.setColor(0.0F, 1.0F, 0.0F);
+      } else {
+         this.setColor(1.0F, 1.0F, 0.0F);
       }
 
       this.spriteProv = spriteProvider;
       this.setSprite(this.spriteProv.get(this.age, this.lifetime));
    }
 
-   public void extractRotatedQuad(QuadParticleRenderState submittable, @NonNull Quaternionf rotation, float x, float y, float z, float tickProgress) {
+   public void extractRotatedQuad(QuadParticleRenderState submittable, Quaternionf rotation, float x, float y, float z, float tickProgress) {
       submittable.add(
               this.getLayer(),
               x,
@@ -92,7 +92,7 @@ public class ReviveParticle extends SingleQuadParticle {
       );
    }
 
-   protected @NonNull Layer getLayer() {
+   protected Layer getLayer() {
       return Layer.TRANSLUCENT;
    }
 
@@ -127,7 +127,7 @@ public class ReviveParticle extends SingleQuadParticle {
 
       @Nullable
       public Particle createParticle(
-              @NonNull SimpleParticleType parameters, @NonNull ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, @NonNull RandomSource random
+              SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random
       ) {
          return new ReviveParticle(world, x, y, z, this.spriteProvider, velocityX, velocityY, velocityZ);
       }

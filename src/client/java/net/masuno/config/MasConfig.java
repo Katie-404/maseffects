@@ -15,6 +15,7 @@ public class MasConfig implements Serializable {
     public float MaceShockwaveOpacity = 1.0F;
     public boolean MaceSpark = true;
     public boolean MaceFlash = true;
+    public boolean LegacyMaceShockwave = false;
 
     //General
     public boolean ShieldEffect = true;

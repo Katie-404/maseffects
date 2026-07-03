@@ -28,9 +28,9 @@ import java.util.Objects;
 public class HitboxRenderMixin {
     @Shadow
     @Final
-    Minecraft minecraft;
+    private Minecraft minecraft;
     @Inject(method = "showHitboxes",at = @At("HEAD"),cancellable = true)
-    private void rendercustomHitbox(Entity entity, float partialTicks, boolean isServerEntity, CallbackInfo ci){
+    private void renderCustomHitbox(Entity entity, float partialTicks, boolean isServerEntity, CallbackInfo ci){
         boolean isMob = true;
         if (!MasEffects.manager.getConfig().CustomHitbox) return;
         //Hitbox is from player
